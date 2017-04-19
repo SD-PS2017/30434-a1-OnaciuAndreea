@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog 
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet id="1" author="mwarman">
+    <createTable tableName="User">
+      <column name="id" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="username" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="password" type="varchar(100)">
+        <constraints nullable="false" />
+      </column>
+      <column name="role" type="bigint(20)">
+        <constraints nullable="false" />
+      </column>
+     </createTable>
+  </changeSet>
+ 
+  <changeSet id="2" author="mwarman">
+    <createTable tableName="Role">
+      <column name="id" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="type" type="varchar(100)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+     </createTable>
+  </changeSet>
+  
+   <changeSet id="3" author="mwarman">
+    <createTable tableName="Activities">
+      <column name="id" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="time" type="time">
+        <constraints nullable="false" />
+      </column>
+      <column name="idUser" type="bigint(20)">
+        <constraints nullable="false" />
+      </column>
+       <column name="activityType" type="bigint(20)">
+        <constraints nullable="false" />
+      </column>
+     </createTable>
+  	</changeSet>
+  	
+  	   <changeSet id="4" author="mwarman">
+    <createTable tableName="ActivityType">
+      <column name="id" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="name" type="varchar(100)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+     </createTable>
+  	</changeSet>
+
+   <changeSet id="5" author="mwarman">
+    <createTable tableName="Account">
+      <column name="id" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="type" type="varchar(100)">
+        <constraints nullable="false" />
+      </column>
+      <column name="amount" type="money">
+        <constraints nullable="false" />
+      </column>
+      <column name="dateOfCreation" type="time">
+        <constraints nullable="false" />
+      </column>
+       <column name="clientId" type="bigint(20)" >
+        <constraints nullable="false" />
+      </column>
+     </createTable>
+  	</changeSet>
+  	
+  	<changeSet id="6" author="mwarman">
+    <createTable tableName="Client">
+      <column name="id" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="name" type="varchar(100)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="identityCardNumber" type="int">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="cnp" type="varchar(10)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+       <column name="address" type="varchar(1000)" >
+        <constraints nullable="false" />
+      </column>
+     </createTable>
+  	</changeSet>
+  	
+  	<changeSet id="7" author="mwarman">
+    <addUniqueConstraint 
+            columnNames="username"
+            tableName="User"/>
+  	</changeSet>
+  	
+  	<changeSet id="8" author="mwarman">
+    	<addForeignKeyConstraint baseColumnNames="idUser"
+            baseTableName="Activities"
+            constraintName="fk_activity_user"
+            onDelete="CASCADE"
+            onUpdate="CASCADE"
+            referencedColumnNames="id"
+            referencedTableName="User"/>
+    </changeSet>
+    
+    <changeSet id="9" author="mwarman">
+    	<addForeignKeyConstraint baseColumnNames="activityType"
+        	    baseTableName="Activities"
+            	constraintName="fk_activity_activityType"
+            	onDelete="CASCADE"
+            	onUpdate="CASCADE"
+            	referencedColumnNames="id"
+            	referencedTableName="ActivityType"/>
+    </changeSet>
+      
+   	<changeSet id="10" author="mwarman">
+    	<addForeignKeyConstraint baseColumnNames="role"
+            baseTableName="User"
+            constraintName="fk_user_role"
+            onDelete="CASCADE"
+            onUpdate="CASCADE"
+            referencedColumnNames="id"
+            referencedTableName="Role"/>
+    </changeSet>
+    
+    <changeSet id="11" author="mwarman">
+    	<addForeignKeyConstraint baseColumnNames="clientId"
+            baseTableName="Account"
+            constraintName="fk_account_client"
+            onDelete="CASCADE"
+            onUpdate="CASCADE"
+            referencedColumnNames="id"
+            referencedTableName="Client"/>
+    </changeSet>
+    
+    <changeSet id="12" author="mwarman">
+    	<dropForeignKeyConstraint baseTableName="User" constraintName="fk_user_role"/>
+	</changeSet>
+	
+    <changeSet id="13" author="mwarman">
+    	<modifyDataType 
+            columnName="role"
+            newDataType="varchar(100)"
+            tableName="User"/>
+	</changeSet>
+    
+    <changeSet id="14" author="mwarman">
+    	<dropTable 
+        	    tableName="role"/>
+	</changeSet>
+	
+	<changeSet id="15" author="mwarman">
+  		<dropForeignKeyConstraint baseTableName="Activities" constraintName="fk_activity_activityType"/>
+	</changeSet>
+	
+    <changeSet id="16" author="mwarman">
+    	<modifyDataType 
+            columnName="activityType"
+            newDataType="varchar(100)"
+            tableName="Activities"/>
+	</changeSet>
+    
+    <changeSet id="17" author="mwarman">
+    	<dropTable 
+            tableName="ActivityType"/>
+	</changeSet>
+	
+	<changeSet author="liquibase-docs" id="addColumn-example">
+    	<addColumn tableName="activities">
+        	<column name="additionalInformation" type="varchar(1000)"/>
+    	</addColumn>
+	</changeSet>
+	
+	<changeSet author="liquibase-docs" id="18">
+    	<addColumn tableName="user">
+        	<column name="name" type="varchar(50)"/>
+    	</addColumn>
+	</changeSet>
+
+
+	<changeSet author="liquibase-docs" id="19">
+    	<addColumn tableName="user">
+        	<column name="salary" type="money"/>
+    	</addColumn>
+	</changeSet>
+	
+<changeSet author="liquibase-docs" id="20">
+    <addUniqueConstraint 
+            columnNames="name"
+            constraintName="const"
+            tableName="user"/>
+</changeSet>
+
+<changeSet author="liquibase-docs" id="21">
+    <addUniqueConstraint 
+            columnNames="cnp"
+            constraintName="cnp_const"
+            tableName="client"/>
+</changeSet>
+</databaseChangeLog>
